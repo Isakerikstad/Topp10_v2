@@ -4,12 +4,16 @@ const Quiz = require('../models/quiz'); // Import the Quiz model
 // Handler for creating a new quiz
 const createQuiz = async (req, res) => {
     try {
+        const { quizId, title, question, answers, timeLimit } = req.body;
+
         // Create a new quiz using data from the request body
         const quiz = new Quiz({
-            title: req.body.title, // Quiz title
-            category: req.body.category, // Quiz category
-            questions: req.body.questions, // Quiz questions
-            createdBy: req.user._id // ID of the user creating the quiz (assumes req.user is set after authentication)
+            quizId,
+            title,
+            question,
+            answers,
+            timeLimit,
+            createdAt: new Date()
         });
 
         // Save the quiz to the database
@@ -24,7 +28,7 @@ const createQuiz = async (req, res) => {
 const getQuizzes = async (req, res) => {
     try {
         // Fetch all quizzes and populate the createdBy field with the user's name and email
-        const quizzes = await Quiz.find().populate('createdBy', 'name email');
+        const quizzes = await Quiz.find();
         res.status(200).json(quizzes); // Respond with the list of quizzes
     } catch (error) {
         res.status(500).json({ error: error.message }); // Handle server errors

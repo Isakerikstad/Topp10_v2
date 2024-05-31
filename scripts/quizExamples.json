@@ -1,0 +1,19 @@
+{
+    "quizId": "123456",
+    "title": "Animals",
+    "question": "Name the top 10 largest animals by weight.",
+    "answers": [
+      { "rank": 1, "answer": "Blue Whale" },
+      { "rank": 2, "answer": "African Elephant" },
+      { "rank": 3, "answer": "Asian Elephant" },
+      { "rank": 4, "answer": "White Rhinoceros" },
+      { "rank": 5, "answer": "Hippopotamus" },
+      { "rank": 6, "answer": "Giraffe" },
+      { "rank": 7, "answer": "Asian Gaor" },
+      { "rank": 8, "answer": "Saltwater Crocodile" },
+      { "rank": 9, "answer": "Kodiak Bear" },
+      { "rank": 10, "answer": "Polar Bear" }
+    ],
+    "timeLimit": 60
+  }
+  

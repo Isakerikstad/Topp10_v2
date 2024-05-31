@@ -9,18 +9,14 @@ A quiz application where users answer questions about the top 10 items in variou
    ```sh
    git clone "https://github.com/Isakerikstad/topp10App"
 
-2. Install backend dependencies:
-cd Topp10App/scripts
-npm install
-
-3. Install frontend dependencies:
+2. Install dependencies:
 cd Topp10App
 npm install
 
 
 ## Usage
 
-To run the backend:
+To run the backend ("scripts" directory):
 npm run backend
 The server will start, and you can access the app on http://localhost:5500 by default.
 

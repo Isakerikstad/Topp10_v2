@@ -1,3 +1,4 @@
+// scripts/models/user.js
 const mongoose = require('mongoose');
 const hashPassword = require('../utils/hashPassword'); // Import the hashPassword function
 

@@ -1,6 +1,7 @@
+// scripts/utils/hashPassword.js
 const bcrypt = require('bcryptjs');
 
-const hashPassword = async function (next) {
+const hashPassword = async function(next) {
   console.log('Pre-save hook called');
   const user = this;
   if (!user.isModified('password')) {
