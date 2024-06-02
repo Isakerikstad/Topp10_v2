@@ -1,13 +1,10 @@
 // scripts/routes/quizRoutes.js
 const express = require('express');
+const { createQuiz, getQuizzes, getQuiz } = require('../controllers/quizController');
 const router = express.Router();
-const quizController = require('../controllers/quizController'); // Import the quiz controller
-const authMiddleware = require('../middleware/auth'); // Import authentication middleware to protect routes
 
-// Route to create a new quiz (protected by authentication middleware)
-router.post('/create', quizController.createQuiz);
+router.post('/create', createQuiz);
+router.get('/', getQuizzes);
+router.get('/:quizId', getQuiz); // Ensure this endpoint is correctly defined
 
-// Route to get all quizzes
-router.get('/', quizController.getQuizzes);
-
-module.exports = router; // Export the router for use in the main app
+module.exports = router;

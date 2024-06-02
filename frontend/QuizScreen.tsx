@@ -1,48 +1,63 @@
-// frontend/QuizScreen.tsx
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { getQuizzes } from './QuizService';
+import React, { useState } from 'react';
+import { View, Text, Button, TextInput, StyleSheet } from 'react-native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 const QuizScreen = () => {
-    const [quizzes, setQuizzes] = useState([]);
+    const route = useRoute();
+    const navigation = useNavigation();
+    const { quiz } = route.params;
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [answer, setAnswer] = useState('');
+    const [feedback, setFeedback] = useState('');
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [showResult, setShowResult] = useState(false);
 
-    useEffect(() => {
-        const fetchQuizzes = async () => {
-            try {
-                const fetchedQuizzes = await getQuizzes();
-                console.log('Fetched Quizzes:', fetchedQuizzes); // Add this line
-                setQuizzes(fetchedQuizzes);
-            } catch (error) {
-                console.error('Error fetching quizzes:', error);
-            }
-        };
+    const handleAnswerSubmit = () => {
+        const currentQuestion = quiz.questions[currentQuestionIndex];
+        const userAnswer = answer.toLowerCase();
+        const correctAnswer = currentQuestion.answers.find(a => a.answer.toLowerCase() === userAnswer);
 
-        fetchQuizzes();
-    }, []);
+        if (correctAnswer) {
+            setFeedback(`Correct! Rank: ${correctAnswer.rank}`);
+            setCorrectAnswers(correctAnswers + 1);
+        } else {
+            setFeedback(`Wrong! Correct answers: ${currentQuestion.answers.map(a => `${a.answer} (Rank: ${a.rank})`).join(', ')}`);
+        }
 
-    const renderQuiz = ({ item }) => (
-        <View style={styles.quizContainer}>
-            <Text style={styles.quizTitle}>{item.title}</Text>
-            {item.questions && item.questions.map((question, index) => (
-                <View key={index} style={styles.questionContainer}>
-                    <Text style={styles.questionTitle}>{question.title}</Text>
-                    <Text>{question.question}</Text>
-                </View>
-            ))}
-        </View>
-    );
+        setAnswer('');
+        setShowResult(true);
+    };
+
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < quiz.questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setFeedback('');
+            setShowResult(false);
+        } else {
+            navigation.navigate('QuizSummary', { quiz, correctAnswers, totalQuestions: quiz.questions.length });
+        }
+    };
+
+    const currentQuestion = quiz.questions[currentQuestionIndex];
 
     return (
         <View style={styles.container}>
-            {quizzes.length > 0 ? (
-                <FlatList
-                    data={quizzes}
-                    renderItem={renderQuiz}
-                    keyExtractor={(item) => item._id}
-                />
+            {!showResult ? (
+                <>
+                    <Text style={styles.question}>{currentQuestion.question}</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={answer}
+                        onChangeText={setAnswer}
+                        placeholder="Type your answer here"
+                    />
+                    <Button title="Submit Answer" onPress={handleAnswerSubmit} />
+                </>
             ) : (
-                <Text>No quizzes available</Text>
+                <View style={styles.resultContainer}>
+                    <Text style={styles.feedback}>{feedback}</Text>
+                    <Button title="Next Question" onPress={handleNextQuestion} />
+                </View>
             )}
         </View>
     );
@@ -51,26 +66,29 @@ const QuizScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff'
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    quizContainer: {
-        marginBottom: 16
-    },
-    quizTitle: {
+    question: {
         fontSize: 24,
-        fontWeight: 'bold'
+        marginBottom: 20,
     },
-    questionContainer: {
-        marginTop: 8,
-        padding: 8,
-        backgroundColor: '#f9f9f9',
-        borderRadius: 8
+    input: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        width: '80%',
     },
-    questionTitle: {
+    resultContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    feedback: {
         fontSize: 18,
-        fontWeight: 'bold'
-    }
+        marginBottom: 10,
+    },
 });
 
 export default QuizScreen;
